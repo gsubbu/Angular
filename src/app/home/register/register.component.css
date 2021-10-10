@@ -1,0 +1,12 @@
+.mat-grid-tile .mat-grid-tile-header{
+    border-radius: 25px;
+    font-size: x-large;
+    background: turquoise;
+    color: black;
+}
+
+.mat-grid-tile .mat-grid-tile-footer{
+    border-radius: 25px;
+    background: turquoise;
+    
+}

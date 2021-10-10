@@ -1,0 +1,33 @@
+<!-- Welcome screen -->
+<div class="card-center" *ngIf="false">
+    <mat-card class="example-card">
+        <mat-card-header style="display:block" class="align-center">
+            <mat-card-title style="font-weight: 700; font-size: x-large;">Welcome to Stock Trade Market Place
+            </mat-card-title>
+        </mat-card-header>
+        <img mat-card-image src="assets/img/Logo.jpg" alt="Stock Trade Logo">
+        <mat-card-content>
+            <p class="mat-h1">Trade Stocks. Make Money. Earn Bragging Rights.</p>
+            <p class="mat-h3">Build your portfolio and react to the markets in real time. Compete against your friends
+                or coworkers to earn your spot at the top of the leaderboards.
+            </p>
+        </mat-card-content>
+        <mat-card-actions class="align-center">
+            <button mat-raised-button color="primary" class="big-button">Login</button>
+            <button mat-raised-button color="primary" class="big-button" (click)="registerUser()">Register</button>
+        </mat-card-actions>
+    </mat-card>
+</div>
+
+<!-- Toolbar -->
+<div>
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <span>Welcome to Stock Trade Market Place, User!!</span>
+            <span class="example-spacer"></span>
+            <button mat-raised-button color="primary" class="big-button">Sign out</button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+</div>
+
+<router-outlet></router-outlet>   

@@ -1,1 +1,60 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* card styles */ 
+.example-card {
+    max-width: 600px;
+    border: 5px solid #4A4A4A;
+    border-radius: 25px;
+  }
+  
+.card-center{
+    height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* center align */
+.align-center{
+    /* display: block; */
+    text-align: center;
+}
+
+/* Font sixe for button */
+.big-button{
+  font-size: 20px;
+}
+
+/* Toolbar spacing */
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+/*  */
+.formCenter{
+  margin: 10px;
+}
+
+/**/
+.container{
+  width: 50%;
+  padding: 5%;
+}
+
+/*vertical alignment for forms*/
+.container > *{
+  width: 100%;
+}
+
+.mat-form-field{
+  font-size: 20px;
+}
+
+.registerContainer{
+  margin: 10%;
+    border: 3px solid;
+    border-radius: 25px;
+}
