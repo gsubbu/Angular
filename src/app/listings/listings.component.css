@@ -1,0 +1,65 @@
+.listContainer{
+    margin-top: 2%;
+    margin-left: 25%;
+    margin-right:25%;
+    border: 3px solid;
+    border-radius: 25px;
+  }
+
+/**/
+.container{
+    width: 100%;
+    padding: 5%;    
+  }
+
+/*vertical alignment for forms*/
+.container > *{
+    width: 100%;  
+    }
+    
+.mat-grid-tile .mat-grid-tile-header{
+    border-radius: 25px;
+    font-size: x-large;
+    background: turquoise;
+    color: black;
+}
+    
+.mat-grid-tile .mat-grid-tile-footer{
+    border-radius: 25px;
+    background: none;    
+}
+    
+.imageBorder{
+    border:1px solid;
+    border-radius:25px;
+}
+
+.chooseButton{
+    top: 0px;
+    left: 0px;
+    width: 100%;    
+    z-index: 9;
+    opacity: 0;
+    height: 100%;
+    cursor: pointer;
+    position: absolute;
+}
+
+
+.align-center{
+    text-align: center;
+    margin: 3%;
+}
+
+.big-button{
+    font-size: x-large;
+    margin-right: 2%;
+}
+
+.preview{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 86%;
+    border-radius: 10%;
+}

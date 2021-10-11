@@ -9,33 +9,31 @@
 </div>
 
 <div class="registerContainer">
-    <form [formGroup]="profileForm" class="formCenter" (ngSubmit)="onSubmit()">
+    <form [formGroup]="profileForm" class="formCenter" (ngSubmit)="registerUser()">
         <mat-grid-list cols="3" rowHeight="100px">
-
             <mat-grid-tile colspan="3" rowspan="1">
                 <mat-grid-tile-header>Register User</mat-grid-tile-header>
             </mat-grid-tile>
-            <mat-grid-tile colspan="1" rowspan="4">
-
+            <mat-grid-tile colspan="1" rowspan="5" class="imageBorder">
+                <div><img src="{{profileImg}}" class="preview"></div>
             </mat-grid-tile>
-
             <mat-grid-tile colspan="2" rowspan="1">
                 <div class="container">
                     <mat-form-field>
                         <mat-label>Full Name</mat-label>
-                        <input matInput formControlName="fullName" placeholder="Ex: John Doe" autocomplete="off">
-                        <mat-error *ngIf="profileForm.controls['fullName'].errors?.required">Full name required.
+                        <input type="text" matInput formControlName="fullName" placeholder="Ex: John Doe" autocomplete="off">
+                        <mat-error *ngIf="profileForm.controls['fullName'].errors?.required">Full name is required.
                         </mat-error>
                     </mat-form-field>
                 </div>
-            </mat-grid-tile>
+            </mat-grid-tile>            
             <mat-grid-tile colspan="2" rowspan="1">
                 <div class="container">
                     <mat-form-field>
                         <mat-label>Website URL</mat-label>
-                        <input matInput formControlName="webSiteUrl" placeholder="Ex: www.google.com"
+                        <input type="url" matInput formControlName="webSiteUrl" placeholder="Ex: www.google.com"
                             autocomplete="off">
-                        <mat-error *ngIf="profileForm.controls['webSiteUrl'].errors?.required">Website URL required.
+                        <mat-error *ngIf="profileForm.controls['webSiteUrl'].errors?.required">Website URL is required.
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -44,8 +42,8 @@
                 <div class="container">
                     <mat-form-field>
                         <mat-label>Email</mat-label>
-                        <input matInput formControlName="email" placeholder="Ex.JohnDoe@gmail.com" autocomplete="off">
-                        <mat-error *ngIf="profileForm.controls['email'].errors?.required">Email Address required.
+                        <input type="email" matInput formControlName="email" placeholder="Ex.JohnDoe@gmail.com" autocomplete="off">
+                        <mat-error *ngIf="profileForm.controls['email'].errors?.required">Email Address is required.
                         </mat-error>
                         <mat-error *ngIf="profileForm.controls['email'].errors?.email">Ivalid email address</mat-error>
                     </mat-form-field>
@@ -54,22 +52,34 @@
             <mat-grid-tile colspan="2" rowspan="1">
                 <div class="container">
                     <mat-form-field>
-                        <mat-label>Profile Picture</mat-label>
-                        <input matInput placeholder="Click to upload" autocomplete="off" readonly>
-                        <span matSuffix>
-                            <button mat-fab (click)="uploadPicture()">
-                                <mat-icon>attach_file</mat-icon>
-                            </button>
-                        </span>
+                        <mat-label>Password</mat-label>
+                        <input [type]="hide ? 'password' : 'text'" matInput formControlName="password" placeholder="Create a password" autocomplete="off">
+                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                          </button>
+                        <mat-error *ngIf="profileForm.controls['password'].errors?.required">Password is required.
+                        </mat-error>
+                        <mat-error *ngIf="profileForm.controls['password'].errors?.minlength">Minimum 8 characters</mat-error>
                     </mat-form-field>
                 </div>
             </mat-grid-tile>
+            <mat-grid-tile colspan="2" rowspan="1">
+                <div class="container">
+                    <mat-form-field>
+                        <mat-label>Profile Picture</mat-label>
+                        <input matInput formControlName="fileName" placeholder="Upload an image" readonly/>
+                        <span matSuffix>
+                            <input type="file" #fileInput class="chooseButton" accept="image/*" (change)="selectImage($event)">
+                            <button mat-flat-button color="primary">Browse File</button>
+                        </span>
+                    </mat-form-field>
+                </div>
+            </mat-grid-tile>            
             <mat-grid-tile colspan="3" rowspan="1">
                 <mat-grid-tile-footer>
-                    <button mat-raised-button color="primary" class="big-button"
-                        [disabled]="profileForm.invalid">Save</button>
+                    <button mat-raised-button color="primary" class="big-button" [disabled]="profileForm.invalid">Save</button>
                     <span class="example-spacer"></span>
-                    <button mat-raised-button color="primary" class="big-button" (click)="resetForm()">Cancel</button>
+                    <button mat-raised-button color="primary" class="big-button" (click)="resetForm()">Clear</button>
                 </mat-grid-tile-footer>
             </mat-grid-tile>
         </mat-grid-list>

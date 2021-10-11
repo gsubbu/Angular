@@ -11,7 +11,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
   
 .card-center{
-    height: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -38,23 +38,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin: 10px;
 }
 
-/**/
-.container{
-  width: 50%;
-  padding: 5%;
-}
-
-/*vertical alignment for forms*/
-.container > *{
-  width: 100%;
-}
-
 .mat-form-field{
   font-size: 20px;
 }
 
-.registerContainer{
-  margin: 10%;
-    border: 3px solid;
-    border-radius: 25px;
+snack-bar-container.success{
+  background-color: green;
+  color: white;
+}
+
+snack-bar-container.notification simple-snack-bar{
+  font-size: x-large !important;
+  font-weight: bold;
 }

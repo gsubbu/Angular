@@ -1,0 +1,35 @@
+.registerContainer{
+    margin-top: 9%;
+    margin-left: 25%;
+    margin-right:25%;
+    border: 3px solid;
+    border-radius: 25px;
+  }
+
+  /**/
+.container{
+    width: 100%;
+    padding: 5%;    
+  }
+  
+/*vertical alignment for forms*/
+.container > *{
+width: 100%;  
+}
+
+.mat-grid-tile .mat-grid-tile-header{
+    border-radius: 25px;
+    font-size: x-large;
+    background: turquoise;
+    color: black;
+}
+
+.mat-grid-tile .mat-grid-tile-footer{
+    border-radius: 25px;
+    background: turquoise;
+    
+}
+
+.mat-grid-tile-footer{
+   justify-content: center;
+}

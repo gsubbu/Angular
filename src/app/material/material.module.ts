@@ -9,11 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import {MatTabsModule} from '@angular/material/tabs';
-
-
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 const materialModules = [
   MatCardModule,
@@ -23,10 +19,7 @@ const materialModules = [
   MatGridListModule,
   MatFormFieldModule,
   MatInputModule,
-  // MatButtonModule,
- 
-  
-  // MatProgressBarModule
+  MatSnackBarModule
 ];
 
 @NgModule({

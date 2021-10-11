@@ -1,0 +1,111 @@
+<div>
+    <mat-toolbar color="accent" *ngIf="true">
+        <mat-toolbar-row>
+            <span>Welcome to Stock Trade Market Place, User!!</span>
+            <span class="example-spacer"></span>
+            <button mat-raised-button color="primary" class="big-button">Sign out</button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+</div>
+
+<div class="align-center">
+    <button mat-flat-button class="big-button" color="primary" (click)="postToMarketplace()">Post to
+        Marketplace</button>
+    <button mat-flat-button class="big-button" color="primary" (click)="viewMarketplace()">View Marketplace</button>
+</div>
+
+<div class="listContainer" *ngIf="post">
+    <form [formGroup]="postListingsForm" class="formCenter" (ngSubmit)="postListings()">
+        <mat-grid-list cols="3" rowHeight="100px">
+            <mat-grid-tile colspan="3" rowspan="1">
+                <mat-grid-tile-header>Post a new Listing</mat-grid-tile-header>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="1" rowspan="4" class="imageBorder">
+                <div><img src="{{listImage}}" class="preview"></div>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="2" rowspan="1">
+                <div class="container">
+                    <mat-form-field>
+                        <mat-label>Listing Image</mat-label>
+                        <input matInput formControlName="fileName" readonly placeholder="Click to upload" />
+                        <span matSuffix>
+                            <input type="file" #fileInput class="chooseButton" accept="image/*"
+                                (change)="selectImage($event)">
+                            <button mat-flat-button color="primary">Browse Image</button>
+                        </span>
+                    </mat-form-field>
+                </div>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="1" rowspan="1">
+                <div class="container">
+                    <mat-form-field>
+                        <mat-label>Cost</mat-label>
+                        <input type="number" matInput formControlName="cost" placeholder="0" autocomplete="off">
+                        <span matPrefix>$&nbsp;</span>
+                        <mat-error *ngIf="postListingsForm.controls['cost'].errors?.required">Cost is required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="1" rowspan="1">
+                <div class="container">
+                    <mat-form-field>
+                        <mat-label>Dimensions</mat-label>
+                        <input type="text" matInput formControlName="dimensions" placeholder="Ex: 32x54"
+                            autocomplete="off">
+                        <mat-error *ngIf="postListingsForm.controls['dimensions'].errors?.required">Dimensions are
+                            required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="1" rowspan="1">
+                <div class="container">
+                    <mat-form-field>
+                        <mat-label>File Type</mat-label>
+                        <input type="text" formControlName="fileType" readonly matInput placeholder="Upload an image"
+                            autocomplete="off">
+                        <mat-error *ngIf="postListingsForm.controls['fileType'].errors?.required">Upload an image.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="1" rowspan="1">
+                <div class="container">
+                    <mat-form-field>
+                        <mat-label>Tags</mat-label>
+                        <input type="text" matInput formControlName="tag" placeholder="Enter a tag" autocomplete="off">
+                        <mat-error *ngIf="postListingsForm.controls['tag'].errors?.required">Tag is required.
+                        </mat-error>
+                        <mat-error *ngIf="postListingsForm.controls['tag'].errors?.minlength">Minimum 3 characters
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="2" rowspan="1">
+                <div class="container">
+                    <mat-form-field>
+                        <mat-label>Choose Category</mat-label>
+                        <input type="text" matInput formControlName="category" placeholder="Enter a catergory"
+                            autocomplete="off">
+                        <!-- <mat-select formControlName="categ">
+                            <mat-option value=" ">None</mat-option>
+                            <mat-option *ngFor="let category of categories" [value]="category">{{category}}</mat-option>
+                          </mat-select> -->
+                        <mat-error *ngIf="postListingsForm.controls['category'].errors?.required">Category is required.
+                        </mat-error>
+
+                    </mat-form-field>
+                </div>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="3" rowspan="1">
+                <mat-grid-tile-footer>
+                    <button mat-raised-button color="primary" class="big-button"
+                        [disabled]="postListingsForm.invalid">Save</button>
+                    <span class="example-spacer"></span>
+                    <button mat-raised-button color="primary" class="big-button" (click)="resetForm()">Clear</button>
+                </mat-grid-tile-footer>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </form>
+</div>

@@ -1,3 +1,22 @@
+.registerContainer{
+    margin-top: 2%;
+    margin-left: 17%;
+    margin-right:17%;
+    border: 3px solid;
+    border-radius: 25px;
+  }
+
+/**/
+.container{
+    width: 100%;
+    padding: 5%;    
+  }
+  
+/*vertical alignment for forms*/
+.container > *{
+width: 100%;  
+}
+
 .mat-grid-tile .mat-grid-tile-header{
     border-radius: 25px;
     font-size: x-large;
@@ -7,6 +26,29 @@
 
 .mat-grid-tile .mat-grid-tile-footer{
     border-radius: 25px;
-    background: turquoise;
-    
+    background: none;    
+}
+
+.imageBorder{
+    border:1px solid;
+    border-radius:25px;
+}
+
+.preview{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 86%;
+    border-radius: 10%;
+}
+
+.chooseButton{
+    top: 0px;
+    left: 0px;
+    width: 100%;    
+    z-index: 9;
+    opacity: 0;
+    height: 100%;
+    cursor: pointer;
+    position: absolute;
 }
