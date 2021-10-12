@@ -19,6 +19,7 @@ export class RegisterComponent implements OnInit {
     fullName: new FormControl('', [Validators.required]),
     webSiteUrl: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
+    imageUrl: new FormControl(''),
     password: new FormControl('', [Validators.required, Validators.minLength(8)])
   })
 
@@ -34,7 +35,7 @@ export class RegisterComponent implements OnInit {
   currentFileUpload?: FileUpload;
 
   profileImg: any;
-
+  img: any;
 
   constructor(private uploadService: FileUploadService, private userService: UserService,
     private notificationService: NotificationService) { }
@@ -42,6 +43,14 @@ export class RegisterComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   ngOnInit(): void {
+
+    this.userService.getUsersById('XxnwDYIbrO0vUghgCU2z').subscribe(
+      res => {
+        console.log(res.data())
+        var x: any = res.data();
+        this.img = x.imageUrl;
+      });   
+
   }
 
 
@@ -50,6 +59,11 @@ export class RegisterComponent implements OnInit {
     this.selectedFiles = event.target.files;
 
     if (this.selectedFiles && this.selectedFiles[0]) {
+      //check if it's image
+      if (this.selectedFiles[0].type.split('/')[0] !== "image") {
+        console.error('unsupported file type :( ')
+        return;
+      }
 
       //display image name
       this.updateFileName(this.selectedFiles[0].name)
@@ -66,29 +80,31 @@ export class RegisterComponent implements OnInit {
 
   registerUser() {
     if (this.profileForm.valid) {
-      //this.uploadPicture();
 
       this.userService.createUser(this.profileForm.value).then(res => {
         console.log(res);
-      });
-      this.notificationService.success(this.getFullName().toUppercase() + " registered successfully");
-      this.resetForm();
+        this.uploadPicture(res.id);
+
+        this.notificationService.success(this.getFullName() + " registered successfully");
+        this.resetForm();
+      })
     }
 
   }
 
-  uploadPicture(): void {
+  uploadPicture(userId: any): void {
+    console.log("yes== " + userId);
     if (this.selectedFiles) {
       const file: File | null = this.selectedFiles.item(0);
       this.selectedFiles = undefined;
 
       if (file) {
         this.currentFileUpload = new FileUpload(file);
-        this.uploadService.pushFileToStorage(this.currentFileUpload, 'P').subscribe(
-          error => {
-            console.log(error);
-          }
-        );
+        this.uploadService.pushFileToStorage(this.currentFileUpload, 'P', userId);
+        // .subscribe(
+        //   (res:any) => { console.log(res); },
+
+        // );
       }
     }
 

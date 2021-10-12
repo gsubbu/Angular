@@ -21,10 +21,10 @@ export class ListingsComponent implements OnInit {
 
   postListingsForm: FormGroup = new FormGroup({
     fileName: new FormControl(),
-    cost: new FormControl(0, [Validators.required]),
+    cost: new FormControl(0, [Validators.required,Validators.min(0)]),
     dimensions: new FormControl('', [Validators.required]),
     fileType: new FormControl('', [Validators.required]),
-    tag: new FormControl('', [Validators.required]),
+    tag: new FormControl('', [Validators.required, Validators.minLength(3)]),
     category: new FormControl('', [Validators.required])
   })
 
@@ -37,6 +37,8 @@ export class ListingsComponent implements OnInit {
 
   updateFileName(value: any) { this.postListingsForm.patchValue({ fileName: value }); }
   updateFileType(value: any) { this.postListingsForm.patchValue({ fileType: value }); }
+
+  categories: string[] = ["Health", "Energy", "Industry", "Utilities"];
 
   constructor(private uploadService: FileUploadService, private listingService: ListingService) { }
 
@@ -85,11 +87,13 @@ export class ListingsComponent implements OnInit {
 
       if (file) {
         this.currentFileUpload = new FileUpload(file);
-        this.uploadService.pushFileToStorage(this.currentFileUpload, 'I').subscribe(
-          error => {
-            console.log(error);
-          }
-        );
+        // this.uploadService.pushFileToStorage(this.currentFileUpload, 'I');
+
+        // .subscribe(
+        //   error => {
+        //     console.log(error);
+        //   }
+        // );
       }
     }
 
