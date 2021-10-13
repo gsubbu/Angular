@@ -3,12 +3,12 @@
         <mat-toolbar-row>
             <span>Welcome to Stock Trade Market Place, User!!</span>
             <span class="example-spacer"></span>
-            <button mat-raised-button color="primary" class="big-button">Sign out</button>
+            <button mat-raised-button color="primary" class="big-button" (click)="logout()">Sign out</button>
         </mat-toolbar-row>
     </mat-toolbar>
 </div>
 
-<div class="align-center">
+<div class="center-grid">
     <button mat-flat-button class="big-button" color="primary" (click)="postToMarketplace()">Post to
         Marketplace</button>
     <button mat-flat-button class="big-button" color="primary" (click)="viewMarketplace()">View Marketplace</button>
@@ -27,7 +27,7 @@
                 <div class="container">
                     <mat-form-field>
                         <mat-label>Listing Image</mat-label>
-                        <input matInput formControlName="fileName" readonly placeholder="Click to upload" />
+                        <input matInput formControlName="imageName" readonly placeholder="Click to upload" />
                         <span matSuffix>
                             <input type="file" #fileInput class="chooseButton" accept="image/*"
                                 (change)="selectImage($event)">
@@ -64,10 +64,10 @@
             <mat-grid-tile colspan="1" rowspan="1">
                 <div class="container">
                     <mat-form-field>
-                        <mat-label>File Type</mat-label>
-                        <input type="text" formControlName="fileType" readonly matInput placeholder="Upload an image"
+                        <mat-label>Image Type</mat-label>
+                        <input type="text" formControlName="imageType" readonly matInput placeholder="Upload an image"
                             autocomplete="off">
-                        <mat-error *ngIf="postListingsForm.controls['fileType'].errors?.required">Upload an image.
+                        <mat-error *ngIf="postListingsForm.controls['imageType'].errors?.required">Upload an image.
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -93,7 +93,7 @@
                         <mat-select formControlName="category">
                             <mat-option>None</mat-option>
                             <mat-option *ngFor="let cat of categories" [value]="cat">{{cat}}</mat-option>
-                          </mat-select>
+                        </mat-select>
                         <mat-error *ngIf="postListingsForm.controls['category'].errors?.required">Category is required.
                         </mat-error>
                     </mat-form-field>
@@ -109,4 +109,110 @@
             </mat-grid-tile>
         </mat-grid-list>
     </form>
+</div>
+
+<div *ngIf="view" class="viewListContainer mat-elevation-z8">
+    <!-- Another way of viewing the listings -->
+
+    <!--<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">        
+        <ng-container matColumnDef="imageName">
+          <th mat-header-cell *matHeaderCellDef> Image Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.imageName.split('.')[0]}} </td>
+        </ng-container>
+        <ng-container matColumnDef="imageType">
+          <th mat-header-cell *matHeaderCellDef> Image Type </th>
+          <td mat-cell *matCellDef="let element"> {{element.imageType}} </td>
+        </ng-container>
+        <ng-container matColumnDef="cost">
+          <th mat-header-cell *matHeaderCellDef> Cost </th>
+          <td mat-cell *matCellDef="let element"> {{element.cost}} </td>
+        </ng-container>
+        <ng-container matColumnDef="dimensions">
+          <th mat-header-cell *matHeaderCellDef> Dimensions </th>
+          <td mat-cell *matCellDef="let element"> {{element.dimensions}} </td>
+        </ng-container>
+        <ng-container matColumnDef="tag">
+            <th mat-header-cell *matHeaderCellDef> Tag </th>
+            <td mat-cell *matCellDef="let element"> {{element.tag}} </td>
+          </ng-container>
+          <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef> Category</th>
+            <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+          </ng-container>
+          <ng-container matColumnDef="datePosted">
+            <th mat-header-cell *matHeaderCellDef> Date Posted </th>
+            <td mat-cell *matCellDef="let element"> {{element.datePosted}} </td>
+          </ng-container>
+          <ng-container matColumnDef="imageUrl">
+            <th mat-header-cell *matHeaderCellDef> Image </th>
+            <td mat-cell *matCellDef="let element" width="20%"><div class="container"><img width="20%" src={{element.imageUrl}}></div></td>
+          </ng-container>      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> 
+    </tr>
+    </table> -->
+
+    <mat-form-field appearance="standard">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input autocomplete="off">
+      </mat-form-field>
+
+    <table mat-table
+       [dataSource]="dataSource" multiTemplateDataRows matSort>
+  <!-- <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{column}} </th>
+    <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+  </ng-container> -->
+  <ng-container matColumnDef="imageName">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> imageName </th>
+    <td mat-cell *matCellDef="let element"> {{element.imageName}} </td>
+  </ng-container>
+  <ng-container matColumnDef="cost">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> cost </th>
+    <td mat-cell *matCellDef="let element"> {{element.cost}} </td>
+  </ng-container>
+  <ng-container matColumnDef="category">
+    <th mat-header-cell *matHeaderCellDef > category </th>
+    <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+  </ng-container>
+  <ng-container matColumnDef="datePosted">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> datePosted </th>
+    <td mat-cell *matCellDef="let element"> {{element.datePosted}} </td>
+  </ng-container>
+
+  <!-- Expanded Content Column -->
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+      <div class="example-element-detail"
+           [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <div class="example-element-diagram">          
+          <div class="element-image"><img class="fit-image" src="{{element.imageUrl}}"> </div>
+        </div>
+        <div class="element-inner-details">
+          <div class="inline"><p class="mat-header-cell">Image Type: </p><span class="inner-values">{{element.imageType}}</span></div>
+          <div class="inline"><p class="mat-header-cell">Dimensions: </p><span class="inner-values">{{element.dimensions}}</span></div>
+          <div class="inline"><p class="mat-header-cell">Tag: </p><span class="inner-values">{{element.tag}}</span></div>
+          
+        </div>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+  <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+      class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  <!-- No values during filter -->
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell align-center" colspan="4">No data</td>
+  </tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons 
+                 aria-label="Select page of periodic elements">
+  </mat-paginator>
+
 </div>

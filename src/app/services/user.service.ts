@@ -6,21 +6,21 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 })
 export class UserService {
 
-  constructor(private angularFirestore: AngularFirestore) { }
+  constructor(private firestore: AngularFirestore) { }
 
 
   getUsers() {
-    return this.angularFirestore.collection("userInfo").snapshotChanges();
+    return this.firestore.collection("usersInfo").snapshotChanges();
   }
 
   getUsersById(userId: any) {
-    return this.angularFirestore.collection("userInfo").doc(userId).get();
+    return this.firestore.collection("usersInfo").doc(userId).get();
   }
 
   createUser(user: any) {
     return new Promise<any>((resolve, reject) => {
-      this.angularFirestore
-        .collection("userInfo")
+      this.firestore
+        .collection("usersInfo")
         .add(user)
         .then(response => { resolve(response) }, error => reject(error));
     });

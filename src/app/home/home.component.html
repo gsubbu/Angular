@@ -1,5 +1,5 @@
 <!-- Welcome screen -->
-<div class="card-center" *ngIf="false">
+<div class="card-center" *ngIf="true">
     <mat-card class="example-card">
         <mat-card-header style="display:block" class="align-center">
             <mat-card-title style="font-weight: 700; font-size: x-large;">Welcome to Stock Trade Market Place
@@ -13,14 +13,14 @@
             </p>
         </mat-card-content>
         <mat-card-actions class="align-center">
-            <button mat-raised-button color="primary" class="big-button">Login</button>
+            <button mat-raised-button color="primary" class="big-button" (click)="loginUser()">Login</button>
             <button mat-raised-button color="primary" class="big-button" (click)="registerUser()">Register</button>
         </mat-card-actions>
     </mat-card>
 </div>
 
 <!-- Toolbar -->
-<div>
+<!-- <div>
     <mat-toolbar color="accent" *ngIf="false">
         <mat-toolbar-row>
             <span>Welcome to Stock Trade Market Place, User!!</span>
@@ -28,6 +28,6 @@
             <button mat-raised-button color="primary" class="big-button">Sign out</button>
         </mat-toolbar-row>
     </mat-toolbar>
-</div>
+</div> -->
 
 <router-outlet></router-outlet>   

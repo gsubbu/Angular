@@ -4,6 +4,8 @@ import { FileUpload } from 'src/app/models/file-upload.model';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { UserService } from 'src/app/services/user.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -37,19 +39,26 @@ export class RegisterComponent implements OnInit {
   profileImg: any;
   img: any;
 
+  isSignedIn = false;
+
   constructor(private uploadService: FileUploadService, private userService: UserService,
-    private notificationService: NotificationService) { }
+    private notificationService: NotificationService, public firebaseService: FirebaseService, private router:Router) { }
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   ngOnInit(): void {
 
-    this.userService.getUsersById('XxnwDYIbrO0vUghgCU2z').subscribe(
-      res => {
-        console.log(res.data())
-        var x: any = res.data();
-        this.img = x.imageUrl;
-      });   
+    // this.userService.getUsersById('EiTmxq43W3HQfZcis9dR').subscribe(
+    //   res => {
+    //     console.log(res.data())
+    //     var x: any = res.data();
+    //     this.img = x.imageUrl;
+    //   });   
+
+    if (localStorage.getItem('user') !== null)
+      this.isSignedIn = true;
+    else
+      this.isSignedIn = false;
 
   }
 
@@ -59,7 +68,7 @@ export class RegisterComponent implements OnInit {
     this.selectedFiles = event.target.files;
 
     if (this.selectedFiles && this.selectedFiles[0]) {
-      //check if it's image
+      //check if image is selected
       if (this.selectedFiles[0].type.split('/')[0] !== "image") {
         console.error('unsupported file type :( ')
         return;
@@ -78,16 +87,22 @@ export class RegisterComponent implements OnInit {
 
   }
 
-  registerUser() {
+  async registerUser() {
     if (this.profileForm.valid) {
 
-      this.userService.createUser(this.profileForm.value).then(res => {
-        console.log(res);
-        this.uploadPicture(res.id);
-
-        this.notificationService.success(this.getFullName() + " registered successfully");
-        this.resetForm();
-      })
+      await this.firebaseService.signup(this.getEmail(), this.getPassword())
+      if (this.firebaseService.isLoggedIn) {
+        this.isSignedIn = true;
+        
+        this.userService.createUser(this.profileForm.value).then(res => {
+          console.log(res);
+          this.uploadPicture(res.id);
+          
+          this.notificationService.success(this.getFullName() + " registered successfully");
+          this.resetForm();
+          this.router.navigate(['home/login']);
+        })
+      }
     }
 
   }
@@ -101,10 +116,6 @@ export class RegisterComponent implements OnInit {
       if (file) {
         this.currentFileUpload = new FileUpload(file);
         this.uploadService.pushFileToStorage(this.currentFileUpload, 'P', userId);
-        // .subscribe(
-        //   (res:any) => { console.log(res); },
-
-        // );
       }
     }
 

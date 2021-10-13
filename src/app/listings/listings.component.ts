@@ -1,15 +1,32 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FileUpload } from '../models/file-upload.model';
 import { FileUploadService } from '../services/file-upload.service';
 import { ListingService } from '../services/listing.service';
+import { NotificationService } from '../services/notification.service';
+import { map } from 'rxjs/operators';
+import { MatTableDataSource } from '@angular/material/table';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { FirebaseService } from '../services/firebase.service';
+import { LoginComponent } from '../home/login/login.component';
+import { RegisterComponent } from '../home/register/register.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listings',
   templateUrl: './listings.component.html',
-  styleUrls: ['./listings.component.css']
+  styleUrls: ['./listings.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
-export class ListingsComponent implements OnInit {
+export class ListingsComponent implements OnInit, AfterViewInit {
 
   post: boolean = false;
   view: boolean = false;
@@ -20,42 +37,80 @@ export class ListingsComponent implements OnInit {
   fileAttr: any;
 
   postListingsForm: FormGroup = new FormGroup({
-    fileName: new FormControl(),
-    cost: new FormControl(0, [Validators.required,Validators.min(0)]),
+    imageName: new FormControl(),
+    imageUrl: new FormControl(),
+    cost: new FormControl(0, [Validators.required, Validators.min(0)]),
     dimensions: new FormControl('', [Validators.required]),
-    fileType: new FormControl('', [Validators.required]),
+    imageType: new FormControl('', [Validators.required]),
     tag: new FormControl('', [Validators.required, Validators.minLength(3)]),
     category: new FormControl('', [Validators.required])
   })
 
-  getFileName() { return this.postListingsForm.controls['fileName'].value }
+  getImageName() { return this.postListingsForm.controls['imageName'].value }
   getCost() { return this.postListingsForm.controls['cost'].value }
   getdimensions() { return this.postListingsForm.controls['dimensions'].value }
-  getFileType() { return this.postListingsForm.controls['fileType'].value }
+  getImageType() { return this.postListingsForm.controls['imageType'].value }
   getTag() { return this.postListingsForm.controls['tag'].value }
   getcategory() { return this.postListingsForm.controls['category'].value }
 
-  updateFileName(value: any) { this.postListingsForm.patchValue({ fileName: value }); }
-  updateFileType(value: any) { this.postListingsForm.patchValue({ fileType: value }); }
+  updateImageName(value: any) { this.postListingsForm.patchValue({ imageName: value }); }
+  updateImageType(value: any) { this.postListingsForm.patchValue({ imageType: value }); }
 
+  //Categories
   categories: string[] = ["Health", "Energy", "Industry", "Utilities"];
+  //Grid view
+  dataSource: any;
+  expandedElement: {
+    imageName: string;
+    imageType: string;
+    cost: number;
+    dimensions: string;
+    tag: string;
+    category: string;
+    datePosted: string;
+    imageUrl: string;
+  } | undefined
+  listingDetails?= [];
+  columnsToDisplay: string[] = ['imageName', 'cost', 'category', 'datePosted'];
 
-  constructor(private uploadService: FileUploadService, private listingService: ListingService) { }
-
-  @ViewChild('fileInput')
-  fileInput!: ElementRef;
-
-  ngOnInit(): void {
+  constructor(private uploadService: FileUploadService, private listingService: ListingService,
+    private notificationService: NotificationService, public firebaseService: FirebaseService,
+    private loginComponent: LoginComponent, private registerComponent: RegisterComponent,
+    private router: Router) {
+    // this.getAllListings();
+    //initialize here for MatSort & MatPaginator
+    // this.dataSource = new MatTableDataSource(this.listingDetails);
   }
 
+  @ViewChild('fileInput') fileInput!: ElementRef;
+  //@ViewChild(MatSort) sort: MatSort | undefined;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  ngAfterViewInit() {
+
+    // this.dataSource.sort = this.sort;
+  }
+
+  ngOnInit(): void {
+    console.log("listing");
+    // this.getAllListings();
+    // this.dataSource = new MatTableDataSource(this.listingDetails);
+    // this.dataSource.paginator = this.paginator;
+  }
+
+  logout() {
+    this.firebaseService.logout();
+    this.loginComponent.isSignedIn = false;
+    this.registerComponent.isSignedIn = false;
+    this.router.navigate(['home']);
+  }
+
+  // -------------------------------- Create a Listing ------------------------
+
+  //Show create listing
   postToMarketplace() {
     this.post = true;
     this.view = false;
-  }
-
-  viewMarketplace() {
-    this.view = true;
-    this.post = false;
   }
 
   selectImage(event: any) {
@@ -63,11 +118,16 @@ export class ListingsComponent implements OnInit {
     this.selectedFiles = event.target.files;
 
     if (this.selectedFiles && this.selectedFiles[0]) {
+      //check if image is selected
+      if (this.selectedFiles[0].type.split('/')[0] !== "image") {
+        console.error('unsupported file type :( ')
+        return;
+      }
       //display image name
-      this.updateFileName(this.selectedFiles[0].name);
+      this.updateImageName(this.selectedFiles[0].name);
 
       //read the extension of the image
-      this.updateFileType(this.selectedFiles[0].name.split('.').pop());
+      this.updateImageType(this.selectedFiles[0].name.split('.').pop());
 
       //preview image
       const reader = new FileReader();
@@ -79,52 +139,74 @@ export class ListingsComponent implements OnInit {
 
   }
 
-  uploadPicture(): void {
-
+  uploadPicture(listId: string): void {
     if (this.selectedFiles) {
       const file: File | null = this.selectedFiles.item(0);
       this.selectedFiles = undefined;
 
       if (file) {
         this.currentFileUpload = new FileUpload(file);
-        // this.uploadService.pushFileToStorage(this.currentFileUpload, 'I');
-
-        // .subscribe(
-        //   error => {
-        //     console.log(error);
-        //   }
-        // );
+        this.uploadService.pushFileToStorage(this.currentFileUpload, 'I', listId);
       }
     }
-
   }
 
+  //Create a lisitngs
   postListings() {
-    // this.uploadPicture();
-
     if (this.postListingsForm.valid) {
+      //get current date
       let today = new Date();
-
+      //append all the listing data
       let listingData = {
-        imageId: '',
-        imageName: this.getFileName(),
-        cost: this.getCost(),
-        dimensions: this.getdimensions(),
-        fileType: this.getFileType(),
-        tags: this.getTag(),
-        category: this.getcategory(),
+        ...this.postListingsForm.value,
         datePosted: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
-
       }
-
-      this.listingService.postListings(listingData).then(res => {
+      //create a listing
+      this.listingService.createListings(listingData).then(res => {
+        //upload the image along with the created listing
+        this.uploadPicture(res.id);
+        this.notificationService.success("Image listing created successfully");
+        this.resetForm();
         console.log(res);
       });
     }
   }
 
-  resetForm() {
+  // -------------------------------View Listings --------------------------------
 
+  //Show Marketplace
+  viewMarketplace() {
+    this.view = true;
+    this.post = false;
+    this.getAllListings();
+  }
+
+  //Get all the listings
+  getAllListings() {
+    this.listingService.getListings().pipe(
+      map((data: any[]) =>
+        data.map(c =>
+        ({
+          // id: c.payload.doc.id, //store image id if needed
+          ...c.payload.doc.data()
+        })
+        )
+      )
+    ).subscribe((data: any) => {
+      this.listingDetails = data;
+      this.dataSource = new MatTableDataSource(this.listingDetails);
+      console.log(this.listingDetails);
+    });
+
+  }
+
+  //filter operation
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  resetForm() {
     //reset form
     this.postListingsForm.reset();
     //clear image

@@ -11,21 +11,20 @@ import { FileUpload } from '../models/file-upload.model';
 })
 export class FileUploadService {
 
-  private basePath: any;
-  private userInfo: any = '/userInfo';
+  private imageStoragePath: string = '';
+  private collectionPath: string = '';
+  
 
-  constructor(private storage: AngularFireStorage, private fs: AngularFirestore) { }
+  constructor(private storage: AngularFireStorage, private firestore: AngularFirestore) {
+  }
 
 
-  pushFileToStorage(fileUpload: FileUpload, imagePath: string, userId: string) {
-    if (imagePath.length == 1) {
-      if (imagePath == 'P')
-        this.basePath = '/profilePath';
-      else
-        this.basePath = '/listingsPath';
+  pushFileToStorage(fileUpload: FileUpload, imagePath: string, documentId: string) {
+    if (imagePath !== null && imagePath.length == 1) {
+      if (imagePath == 'P') this.imageStoragePath = '/profilePictures'; else this.imageStoragePath = '/listingPictures';
     }
 
-    const filePath = `${this.basePath}/${fileUpload.file.name}`;
+    const filePath = `${this.imageStoragePath}/${fileUpload.file.name}`;
     const storageRef = this.storage.ref(filePath);
     const uploadTask = this.storage.upload(filePath, fileUpload.file);
 
@@ -35,8 +34,9 @@ export class FileUploadService {
         url.subscribe(downloadURL => {
           fileUpload.url = downloadURL;
           console.log(downloadURL);
-          console.log(userId);
-          this.saveFileData(fileUpload, userId);
+          console.log(documentId);
+          if (imagePath == 'P') this.collectionPath = '/usersInfo'; else this.collectionPath = '/listingsInfo';
+          this.saveFileData(fileUpload, documentId, this.collectionPath);
         });
       })
     ).subscribe();
@@ -44,12 +44,10 @@ export class FileUploadService {
 
   }
 
-  private saveFileData(fileUpload: FileUpload, userId: string): void {
-    console.log(this.userInfo);
-    console.log(userId);
+  private saveFileData(fileUpload: FileUpload, documentId: string, collectionPath: string): void {    
+    console.log(documentId);
 
-
-    this.fs.collection(this.userInfo).doc(userId).set({ imageUrl: fileUpload.url }, { merge: true }).then(res => {
+    this.firestore.collection(collectionPath).doc(documentId).set({ imageUrl: fileUpload.url }, { merge: true }).then(res => {
       console.log(res);
     }).catch(error => {
       console.log("error: " + error);
@@ -75,8 +73,5 @@ export class FileUploadService {
   //   return this.db.list(this.basePath).remove(key);
   // }
 
-  private deleteFileStorage(name: string): void {
-    const storageRef = this.storage.ref(this.basePath);
-    storageRef.child(name).delete();
-  }
+
 }

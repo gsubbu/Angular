@@ -13,8 +13,12 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  loginUser(){
+    this.router.navigate(['login'], { relativeTo: this.route });
+  }
+
   registerUser() {
-    this.router.navigate(['register'], { relativeTo: this.route })
+    this.router.navigate(['register'], { relativeTo: this.route });
   }
 
 }
