@@ -53,12 +53,7 @@ export class RegisterComponent implements OnInit {
     //     console.log(res.data())
     //     var x: any = res.data();
     //     this.img = x.imageUrl;
-    //   });   
-
-    if (localStorage.getItem('user') !== null)
-      this.isSignedIn = true;
-    else
-      this.isSignedIn = false;
+    //   });      
 
   }
 
@@ -91,16 +86,15 @@ export class RegisterComponent implements OnInit {
     if (this.profileForm.valid) {
 
       await this.firebaseService.signup(this.getEmail(), this.getPassword())
-      if (this.firebaseService.isLoggedIn) {
-        this.isSignedIn = true;
+      if (this.firebaseService.isLoggedIn) {        
         
-        this.userService.createUser(this.profileForm.value).then(res => {
-          console.log(res);
-          this.uploadPicture(res.id);
+        this.userService.createUser(this.profileForm.value,this.firebaseService.userId).then(res => {
+          
+          this.uploadPicture(this.firebaseService.userId);
           
           this.notificationService.success(this.getFullName() + " registered successfully");
           this.resetForm();
-          this.router.navigate(['home/login']);
+          this.router.navigate(['home']);
         })
       }
     }
@@ -108,7 +102,7 @@ export class RegisterComponent implements OnInit {
   }
 
   uploadPicture(userId: any): void {
-    console.log("yes== " + userId);
+   
     if (this.selectedFiles) {
       const file: File | null = this.selectedFiles.item(0);
       this.selectedFiles = undefined;
@@ -125,7 +119,7 @@ export class RegisterComponent implements OnInit {
     this.profileForm.reset();
     //clear image
     this.fileInput.nativeElement.value = '';
-    this.profileImg = '';
+    
   }
 
 }

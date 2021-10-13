@@ -10,8 +10,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { FirebaseService } from '../services/firebase.service';
-import { LoginComponent } from '../home/login/login.component';
-import { RegisterComponent } from '../home/register/register.component';
+import { LoginComponent } from '../login/login.component';
+import { RegisterComponent } from '../register/register.component';
 import { Router } from '@angular/router';
 
 @Component({
@@ -26,7 +26,7 @@ import { Router } from '@angular/router';
     ]),
   ]
 })
-export class ListingsComponent implements OnInit, AfterViewInit {
+export class ListingsComponent implements OnInit,AfterViewInit {
 
   post: boolean = false;
   view: boolean = false;
@@ -75,7 +75,7 @@ export class ListingsComponent implements OnInit, AfterViewInit {
 
   constructor(private uploadService: FileUploadService, private listingService: ListingService,
     private notificationService: NotificationService, public firebaseService: FirebaseService,
-    private loginComponent: LoginComponent, private registerComponent: RegisterComponent,
+    
     private router: Router) {
     // this.getAllListings();
     //initialize here for MatSort & MatPaginator
@@ -83,27 +83,19 @@ export class ListingsComponent implements OnInit, AfterViewInit {
   }
 
   @ViewChild('fileInput') fileInput!: ElementRef;
-  //@ViewChild(MatSort) sort: MatSort | undefined;
+  @ViewChild(MatSort) sort: MatSort | undefined;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngAfterViewInit() {
 
-    // this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort;
   }
 
-  ngOnInit(): void {
-    console.log("listing");
-    // this.getAllListings();
-    // this.dataSource = new MatTableDataSource(this.listingDetails);
-    // this.dataSource.paginator = this.paginator;
-  }
-
-  logout() {
-    this.firebaseService.logout();
-    this.loginComponent.isSignedIn = false;
-    this.registerComponent.isSignedIn = false;
-    this.router.navigate(['home']);
-  }
+  ngOnInit(): void {   
+    this.getAllListings();
+    this.dataSource = new MatTableDataSource(this.listingDetails);
+    this.dataSource.paginator = this.paginator;
+  }  
 
   // -------------------------------- Create a Listing ------------------------
 
@@ -166,8 +158,7 @@ export class ListingsComponent implements OnInit, AfterViewInit {
         //upload the image along with the created listing
         this.uploadPicture(res.id);
         this.notificationService.success("Image listing created successfully");
-        this.resetForm();
-        console.log(res);
+        this.resetForm();        
       });
     }
   }
@@ -194,8 +185,7 @@ export class ListingsComponent implements OnInit, AfterViewInit {
       )
     ).subscribe((data: any) => {
       this.listingDetails = data;
-      this.dataSource = new MatTableDataSource(this.listingDetails);
-      console.log(this.listingDetails);
+      this.dataSource = new MatTableDataSource(this.listingDetails);      
     });
 
   }

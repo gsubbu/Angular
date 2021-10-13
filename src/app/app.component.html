@@ -1,1 +1,12 @@
+<div>
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <span>Welcome to Stock Trade Market Place{{userName}}!!</span>
+            <span class="example-spacer"></span>
+            <button mat-raised-button color="primary" class="big-button" (click)="home()" >Home</button>
+            <button mat-raised-button color="primary" class="big-button" (click)="logout()" *ngIf="showButton">Sign out</button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+</div>
+
 <router-outlet></router-outlet>

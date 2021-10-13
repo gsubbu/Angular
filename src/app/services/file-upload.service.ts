@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase, AngularFireList } from '@angular/fire/compat/database';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { FileUpload } from '../models/file-upload.model';
 
@@ -19,7 +17,7 @@ export class FileUploadService {
   }
 
 
-  pushFileToStorage(fileUpload: FileUpload, imagePath: string, documentId: string) {
+  pushFileToStorage(fileUpload: FileUpload, imagePath: string, userId: string) {
     if (imagePath !== null && imagePath.length == 1) {
       if (imagePath == 'P') this.imageStoragePath = '/profilePictures'; else this.imageStoragePath = '/listingPictures';
     }
@@ -34,9 +32,9 @@ export class FileUploadService {
         url.subscribe(downloadURL => {
           fileUpload.url = downloadURL;
           console.log(downloadURL);
-          console.log(documentId);
+          console.log(userId);
           if (imagePath == 'P') this.collectionPath = '/usersInfo'; else this.collectionPath = '/listingsInfo';
-          this.saveFileData(fileUpload, documentId, this.collectionPath);
+          this.saveFileData(fileUpload, userId, this.collectionPath);
         });
       })
     ).subscribe();
@@ -53,25 +51,5 @@ export class FileUploadService {
       console.log("error: " + error);
     })
   }
-  //this.db.list(this.basePath).push(fileUpload);
-
-
-  // getFiles(numberItems: number): AngularFireList<FileUpload> {
-  //   return this.db.list(this.basePath, ref =>
-  //     ref.limitToLast(numberItems));
-  // }
-
-  // deleteFile(fileUpload: FileUpload): void {
-  //   this.deleteFileDatabase(fileUpload.key)
-  //     .then(() => {
-  //       this.deleteFileStorage(fileUpload.name);
-  //     })
-  //     .catch(error => console.log(error));
-  // }
-
-  // private deleteFileDatabase(key: string): Promise<void> {
-  //   return this.db.list(this.basePath).remove(key);
-  // }
-
 
 }

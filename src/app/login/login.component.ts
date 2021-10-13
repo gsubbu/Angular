@@ -6,17 +6,18 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],  
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
 
   hide: boolean = true;
-  isSignedIn = false;
+  isSignedIn = true;
+ 
 
   constructor(public firebaseService: FirebaseService, public router: Router) { }
 
   loginForm: FormGroup = new FormGroup({
-    email: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required])
   })
 
@@ -24,21 +25,25 @@ export class LoginComponent implements OnInit {
   getPassword() { return this.loginForm.controls['password'].value };
 
   ngOnInit(): void {
-    if (localStorage.getItem('user') !== null)
-      this.isSignedIn = true;
-    else
-      this.isSignedIn = false;
+    console.log(this.firebaseService.isLoggedIn)
   }
 
   async login() {
-    await this.firebaseService.signin(this.getEmail(), this.getPassword());
-    console.log("about to log");
-    if (this.firebaseService.isLoggedIn) {
-      console.log("logged")
-      this.isSignedIn = true;
-      this.router.navigate(['/listings']);
-    }
+    if (this.loginForm.valid) {
 
+      await this.firebaseService.signin(this.getEmail(), this.getPassword());
+
+      //display error message for invalid credentials
+      this.isSignedIn = this.firebaseService.isLoggedIn;
+
+     
+      if (this.firebaseService.isLoggedIn) {
+                    
+        this.router.navigate(['listings']);
+      }
+    }
   }
 
 }
+
+

@@ -14,14 +14,17 @@ export class UserService {
   }
 
   getUsersById(userId: any) {
+    console.log("userService"+userId);
     return this.firestore.collection("usersInfo").doc(userId).get();
   }
 
-  createUser(user: any) {
+  
+
+  createUser(user: any, userId: string) {
     return new Promise<any>((resolve, reject) => {
       this.firestore
-        .collection("usersInfo")
-        .add(user)
+        .collection("usersInfo").doc(userId)
+        .set(user)
         .then(response => { resolve(response) }, error => reject(error));
     });
 
