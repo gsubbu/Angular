@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
   getPassword() { return this.loginForm.controls['password'].value };
 
   ngOnInit(): void {
-    console.log(this.firebaseService.isLoggedIn)
+    
   }
 
   async login() {
@@ -35,10 +35,8 @@ export class LoginComponent implements OnInit {
 
       //display error message for invalid credentials
       this.isSignedIn = this.firebaseService.isLoggedIn;
-
      
-      if (this.firebaseService.isLoggedIn) {
-                    
+      if (this.firebaseService.isLoggedIn) {                    
         this.router.navigate(['listings']);
       }
     }

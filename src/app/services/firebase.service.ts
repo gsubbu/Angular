@@ -18,8 +18,7 @@ export class FirebaseService {
 
   async signin(email: string, password: string) {
     await this.firebaseAuth.signInWithEmailAndPassword(email, password)
-      .then(res => {
-        console.log(res);
+      .then(res => {       
         this.isLoggedIn = true;
         //set user id on sign in
         this.userId = res.user?.uid;

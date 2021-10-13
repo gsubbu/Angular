@@ -10,8 +10,6 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { FirebaseService } from '../services/firebase.service';
-import { LoginComponent } from '../login/login.component';
-import { RegisterComponent } from '../register/register.component';
 import { Router } from '@angular/router';
 
 @Component({
@@ -26,7 +24,7 @@ import { Router } from '@angular/router';
     ]),
   ]
 })
-export class ListingsComponent implements OnInit,AfterViewInit {
+export class ListingsComponent implements OnInit {
 
   post: boolean = false;
   view: boolean = false;
@@ -75,27 +73,16 @@ export class ListingsComponent implements OnInit,AfterViewInit {
 
   constructor(private uploadService: FileUploadService, private listingService: ListingService,
     private notificationService: NotificationService, public firebaseService: FirebaseService,
-    
-    private router: Router) {
-    // this.getAllListings();
-    //initialize here for MatSort & MatPaginator
-    // this.dataSource = new MatTableDataSource(this.listingDetails);
+  ) {
+    this.getAllListings();
   }
 
   @ViewChild('fileInput') fileInput!: ElementRef;
   @ViewChild(MatSort) sort: MatSort | undefined;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  ngAfterViewInit() {
-
-    this.dataSource.sort = this.sort;
+  ngOnInit(): void {
   }
-
-  ngOnInit(): void {   
-    this.getAllListings();
-    this.dataSource = new MatTableDataSource(this.listingDetails);
-    this.dataSource.paginator = this.paginator;
-  }  
 
   // -------------------------------- Create a Listing ------------------------
 
@@ -158,7 +145,7 @@ export class ListingsComponent implements OnInit,AfterViewInit {
         //upload the image along with the created listing
         this.uploadPicture(res.id);
         this.notificationService.success("Image listing created successfully");
-        this.resetForm();        
+        this.resetForm();
       });
     }
   }
@@ -185,16 +172,33 @@ export class ListingsComponent implements OnInit,AfterViewInit {
       )
     ).subscribe((data: any) => {
       this.listingDetails = data;
-      this.dataSource = new MatTableDataSource(this.listingDetails);      
+      this.dataSource = new MatTableDataSource(this.listingDetails);
+      //initialize here for MatSort & MatPaginator
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
     });
 
   }
 
-  //filter operation
+
   applyFilter(event: Event) {
+    //custom filter
+
+    // this.dataSource.filterPredicate = (data: any, filter: any) => {
+    //   return this.columnsToDisplay.some(ele => {
+    //     return ele != 'category' && data[ele].toLowerCase().indexOf(filter) != -1;
+    //   });
+    // };
+
+    //filter operation for all columns
+
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
+
+
+
+
 
   resetForm() {
     //reset form

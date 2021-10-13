@@ -47,14 +47,6 @@ export class RegisterComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   ngOnInit(): void {
-
-    // this.userService.getUsersById('EiTmxq43W3HQfZcis9dR').subscribe(
-    //   res => {
-    //     console.log(res.data())
-    //     var x: any = res.data();
-    //     this.img = x.imageUrl;
-    //   });      
-
   }
 
 
@@ -118,8 +110,7 @@ export class RegisterComponent implements OnInit {
   resetForm() {
     this.profileForm.reset();
     //clear image
-    this.fileInput.nativeElement.value = '';
-    
+    this.fileInput.nativeElement.value = '';    
   }
 
 }

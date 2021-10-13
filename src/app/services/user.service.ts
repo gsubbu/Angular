@@ -13,8 +13,7 @@ export class UserService {
     return this.firestore.collection("usersInfo").snapshotChanges();
   }
 
-  getUsersById(userId: any) {
-    console.log("userService"+userId);
+  getUsersById(userId: any) {   
     return this.firestore.collection("usersInfo").doc(userId).get();
   }
 

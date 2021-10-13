@@ -8,15 +8,10 @@ import { UserService } from './services/user.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class AppComponent implements OnInit{
   title = 'StockTradeApplication';
 
-  constructor(private firebaseAuth: FirebaseService, private userService: UserService, private router: Router) {
-    if(this.router.getCurrentNavigation()?.extras.skipLocationChange){
-      this.showButton = true;
-      console.log("works");
-    }
-    console.log("cons")
+  constructor(private firebaseAuth: FirebaseService, private userService: UserService, private router: Router) {    
     this.checkUserSession();
   }
   userName: string = ', User';
@@ -26,18 +21,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   }
 
-  ngAfterViewInit(){
-    console.log("viewInit");
-  }
-
-  ngAfterViewChecked(){
-   // this.checkUserSession();
-  }
-
   logout() {
     this.firebaseAuth.logout();
     this.showButton = false;
-    
   }
 
   home() {
@@ -46,7 +32,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   checkUserSession() {
-    console.log("called")
     this.showButton = false;
 
     if (localStorage.getItem('user') != null) {
@@ -56,8 +41,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
           //display signed in user name
           this.userName = ' ' + data.fullName;
           this.showButton = this.firebaseAuth.showButton;
-          console.log(typeof data)
-          console.log(res.data());
         }
       )
     }
